@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>账号管理</title>
+		<link rel="stylesheet" type="text/css" href="css/index.css"/>
+		<!--引入字体插件-->
+		<link rel="stylesheet" type="text/css" href="css/font.css"/>
+		<link rel="stylesheet" type="text/css" href="css/default.css"/>
+		<!--引入框架插件-->
+		<script type="text/javascript" src="js/vue.js" ></script>
+		<!--引入插件-->
+		<script type="text/javascript" src="js/index.js" ></script>
+		<script src="./api/checkuser.php"></script>
+		<script src="js/ajax.js"></script>>
+	</head>
+	<body>
+		<div id='app'>
+			<el-container>
+			  		
+			   	 	<el-header>
+			   	 		<h1>欢迎您 <span class='username'>admin</span></h1>
+			   	 		<p>查看和管理所有分类</p>
+			   	 	</el-header>
+			   	 	
+			    	<el-main>
+			    		<el-card class="box-card">
+						  	<div slot="header" class="clearfix">
+						    	<span>分类管理</span>
+						  	</div>
+						 	<div class="text item">
+								<el-table :data="tableData" style="width: 100%">
+								    <el-table-column label="分类名称">
+								      <template slot-scope="scope">
+								        <span>{{ scope.row.label }}</span>
+								      </template>
+								    </el-table-column>
+								    
+								    <el-table-column label="管理">
+								      <template slot-scope="scope">
+								        <el-button @click="edit(scope.row.value)">编辑</el-button>
+								        <el-button size="mini" type="danger" @click="del(scope.row.value)">删除</el-button>
+								      </template>
+								    </el-table-column>
+								    
+								</el-table>
+						  	</div>
+						  	
+						  	
+						  	
+						</el-card>
+						
+			    	</el-main>
+			    	
+			    	<el-footer>&copy;2018版权归我所有</el-footer>
+			  	
+			  	</el-container>
+		</div>
+		
+		<script>
+			new Vue({
+				el:'#app',
+				data:{
+					tableData: []
+				},
+//				在加载页面时显示
+				mounted:function(){
+//					var _that=this;
+//					ajax({
+//						url:'/api/cate_show.php',
+//						success:function(data){
+//							_that.tableData = data;
+//						}
+//					});
+					this.show();
+				},
+				methods:{
+//					绑定修改事件
+					edit:function(id){
+//						console.log(id);
+						location.href="cate_edit.html?id="+id;
+					},
+//					绑定删除事件
+					del:function(id){
+//						console.log(id);
+						var _that = this;
+//						发起ajax请求
+						ajax({
+							url:"/api/cate_del.php?id="+id,
+							success:function(data){
+								console.log(data);
+								if(data.errcode==0){
+									alert('删除成功');
+									_that.show();
+								}else{
+									alert(data.msg);
+								}
+							}
+						});
+					},
+//					自定义显示函数，显示分类
+					show:function(){
+						var _that = this;
+//						发起ajax请求
+						ajax({
+							url:'/api/cate_show.php',
+							success:function(data){
+								_that.tableData = data;
+							}
+						});
+					}
+				}
+					
+				
+			});
+		</script>
+	</body>
+</html>

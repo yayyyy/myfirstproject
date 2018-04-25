@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>超市管理系统</title>
+		<link rel="stylesheet" type="text/css" href="css/index.css"/>
+		<!--引入字体插件-->
+		<link rel="stylesheet" type="text/css" href="css/font.css"/>
+		<link rel="stylesheet" type="text/css" href="css/default.css"/>
+		
+		
+		<!--引入框架插件-->
+		<script type="text/javascript" src="js/vue.js" ></script>
+		<!--引入插件-->
+		<script type="text/javascript" src="js/index.js" ></script>
+		<script src="./api/checkuser.php"></script>
+		
+		
+		
+	</head>
+	<body>
+		<div id='app'>
+			<el-container>
+				<!--左侧-->
+			  	<el-aside width="240px">
+			  		<h1>华联超市管理系统</h1>
+			  		<p>你好,<span class='username'>admin</span></p>
+			  		<p><a href="main.html" target="main">管理首页</a> | <a href="api/del.php">退出系统</a></p>
+			  		<el-menu :default-openeds="['4']">
+					    <el-submenu index="1">
+					        <template slot="title">分类管理</template>
+					          	<el-menu-item index="1-1"><a href="cate_add.html" target="main">添加分类</a></el-menu-item>
+					          	<el-menu-item index="1-2"><a href="cate_list.html" target="main">分类管理</a></el-menu-item>
+					   	</el-submenu>
+					   	<el-submenu index="2">
+					        <template slot="title">商品管理</template>
+					          	<el-menu-item index="2-1"><a href="goods.html" target="main">添加商品</a></el-menu-item>
+					          	<el-menu-item index="2-2"><a href="goods_list.html" target="main">商品管理</a></el-menu-item>
+					   	</el-submenu>
+					   	<el-submenu index="3">
+					        <template slot="title">账号管理</template>
+					          	<el-menu-item index="3-1"><a href="add.html" target="main">添加账号</a></el-menu-item>
+					          	<el-menu-item index="3-2"><a href="list.html" target="main">账号管理</a></el-menu-item>
+					          	<el-menu-item index="3-3"><a href="change.html" target="main">密码修改</a></el-menu-item>
+					   	</el-submenu>
+					   	<el-submenu index="4">
+					        <template slot="title">系统管理</template>
+					          	<el-menu-item index="4-1"><a href="">系统信息</a></el-menu-item>
+					   	</el-submenu>
+					</el-menu>   	
+			  	</el-aside>
+			  	
+			  		
+			  	<!--右侧-->
+			  	<iframe src="main.html" name="main"></iframe>
+			</el-container>
+		</div>
+		
+		
+		
+		
+		
+		<script>
+			new Vue({
+				el:'#app',
+				data:{
+					
+				}
+			});
+		</script>
+	</body>
+</html>

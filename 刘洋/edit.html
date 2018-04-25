@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>编辑</title>
+		<link rel="stylesheet" type="text/css" href="css/index.css"/>
+		<!--引入字体插件-->
+		<link rel="stylesheet" type="text/css" href="css/font.css"/>
+		<link rel="stylesheet" type="text/css" href="css/default.css"/>
+		<!--引入框架插件-->
+		<script type="text/javascript" src="js/vue.js" ></script>
+		<!--引入插件-->
+		<script type="text/javascript" src="js/index.js" ></script>
+		<script src="./api/checkuser.php"></script>
+		<script src="js/ajax.js"></script>
+	</head>
+	<body>
+		<div id='app'>
+			<el-container>
+			  		
+			   	 	<el-header>
+			   	 		<h1>欢迎您 <span class='username'>admin</span></h1>
+			   	 		<p>修改管理员帐号</p>
+			   	 	</el-header>
+			   	 	
+			    	<el-main>
+			    		<el-card class="box-card">
+						  	<div slot="header" class="clearfix">
+						    	<span>修改管理员帐号</span>
+						  	</div>
+						 	<div class="text item" id='add'>
+						 		<p><span class="xing">*</span>用户名:</p>
+						 		
+						    	<p><el-input v-model='username' placeholder="请输入用户名" size="small"></el-input></p>
+						    	
+						    	<p><span class="xing">*</span>密码:</p>
+						    	
+						    	<p><el-input  type='password' v-model='pwd' size="small"></el-input></p>
+						    	
+						    	
+						    	
+						    	<p><span class="xing">*</span>选择用户组:</p>
+						    	
+						    	<el-select v-model='usergroup' placeholder="选择用户组" size="small">
+						    		
+								    <el-option
+								      v-for="item in options"
+								      :key="item.value"
+								      :label="item.label"
+								      :value="item.value">
+								    </el-option>
+								    
+							    </el-select>
+							    <p><el-button @click='edit' class='btn' type="success">立即修改</el-button></p>
+							    
+						  	</div>
+						  	
+						  	
+						  	
+						</el-card>
+						
+			    	</el-main>
+			    	
+			    	<el-footer>&copy;2018版权归我所有</el-footer>
+			  	
+			  	</el-container>
+		</div>
+		
+		<script>
+			new Vue({
+				el:'#app',
+				data:{
+					username: '',
+					pwd: '',
+					usergroup: '',
+					options: [{
+				        value: '超级管理员',
+				        label: '超级管理员'
+				    }, {
+				        value: '普通管理员',
+				        label: '普通管理员'
+				    }, {
+				        value: '员工',
+				        label: '员工'
+				    }]
+				},
+				mounted:function(){
+//					获取ID
+					var id = location.href.split("=")[1];
+//					this私有化改变指向，指向ajax
+					var _that = this;
+					
+					ajax({
+						
+						url: "/api/edit.php?id="+id,
+						
+//						datatype: 'text',
+						
+						success:function(data){
+//							console.log(data);	
+							_that.username = data.username;
+							_that.pwd = data.password;
+							_that.usergroup = data.usergroup;
+						}
+						
+					});
+
+				},
+				methods:{
+//					绑定点击事件
+					edit:function(){
+						var username = this.username;
+						var pwd = this.pwd;
+						var usergroup = this.usergroup;
+						var id = location.href.split("=")[1];
+//						发起ajax请求
+						ajax({
+							url: '/api/modife.php',
+							data: `id=${id}&username=${username}&pwd=${pwd}&usergroup=${usergroup}`,
+							type: 'post',
+							success:function(data){
+								if(data.errcode == 0){
+									location.href = '/list.html';
+								}else{
+									alert(data.msg);
+								}
+							}
+						});
+					}
+				}
+			});
+		</script>
+	</body>
+</html>

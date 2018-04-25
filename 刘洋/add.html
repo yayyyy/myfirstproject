@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>添加账号</title>
+		<link rel="stylesheet" type="text/css" href="css/index.css"/>
+		<!--引入字体插件-->
+		<link rel="stylesheet" type="text/css" href="css/font.css"/>
+		<link rel="stylesheet" type="text/css" href="css/default.css"/>
+		<!--引入框架插件-->
+		<script type="text/javascript" src="js/vue.js" ></script>
+		<!--引入插件-->
+		<script type="text/javascript" src="js/index.js" ></script>
+		<script src="./api/checkuser.php"></script>
+		<script src="js/ajax.js"></script>
+	</head>
+	<body>
+		<div id='app'>
+			<el-container>
+			  		
+			   	 	<el-header>
+			   	 		<h1>欢迎您 <span class='username'>admin</span></h1>
+			   	 		<p>添加管理员帐号</p>
+			   	 	</el-header>
+			   	 	
+			    	<el-main>
+			    		<el-card class="box-card">
+						  	<div slot="header" class="clearfix">
+						    	<span>添加管理员帐号</span>
+						  	</div>
+						 	<div class="text item" id='add'>
+						 		<p><span class="xing">*</span>用户名:</p>
+						 		
+						    	<p><el-input v-model='username' placeholder="请输入用户名" size="small"></el-input></p>
+						    	
+						    	<p><span class="xing">*</span>密码:</p>
+						    	
+						    	<p><el-input  type='password' v-model='password' size="small"></el-input></p>
+						    	
+						    	<p><span class="xing">*</span>确认密码:</p>
+						    	
+						    	<p><el-input type='password' v-model='password2' size="small"></el-input></p>
+						    	
+						    	<p><span class="xing">*</span>选择用户组:</p>
+						    	
+						    	<el-select v-model='usergroup' placeholder="选择用户组" size="small">
+						    		
+								    <el-option
+								      v-for="item in options"
+								      :key="item.value"
+								      :label="item.label"
+								      :value="item.value">
+								    </el-option>
+								    
+							    </el-select>
+							    <p><el-button @click='add' class='btn' type="success">添加</el-button></p>
+							    
+						  	</div>
+						  	
+						  	
+						  	
+						</el-card>
+						
+			    	</el-main>
+			    	
+			    	<el-footer>&copy;2018版权归我所有</el-footer>
+			  	
+			  	</el-container>
+		</div>
+		
+		<script>
+			new Vue({
+				el:'#app',
+				data:{
+					username: '',
+					password: '',
+					password2: '',
+					usergroup: '',
+					options: [{
+				        value: '超级管理员',
+				        label: '超级管理员'
+				    }, {
+				        value: '普通管理员',
+				        label: '普通管理员'
+				    }, {
+				        value: '员工',
+				        label: '员工'
+				    }]
+				},
+				methods:{
+					add:function(){
+//						获取用户的数据
+						var username = this.username;
+						var password = this.password;
+						var usergroup = this.usergroup;
+						var password2 = this.password2;
+						
+						ajax({
+							type: 'post',
+							url: '/api/add.php',
+							data: `username=${username}&password=${password}&usergroup=${usergroup}`,
+							datatype: 'text',
+//							在接收数据之后执行回调函数
+							success:function(data){
+								if(data == '1'){
+									alert('添加成功');
+									location.href='list.html';
+								}else{
+									alert('添加失败');
+								}
+							}
+						});
+					}
+				}
+			});
+		</script>
+	</body>
+</html>

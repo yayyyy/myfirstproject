@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>修改密码</title>
+		<link rel="stylesheet" type="text/css" href="css/index.css"/>
+		<!--引入字体插件-->
+		<link rel="stylesheet" type="text/css" href="css/font.css"/>
+		<link rel="stylesheet" type="text/css" href="css/default.css"/>
+		<!--引入框架插件-->
+		<script type="text/javascript" src="js/vue.js" ></script>
+		<!--引入插件-->
+		<script type="text/javascript" src="js/index.js" ></script>
+		<script src="./api/checkuser.php"></script>
+		<script src="js/ajax.js"></script>
+	</head>
+	<body>
+		<div id='app'>
+			<el-container>
+			  		
+			   	 	<el-header>
+			   	 		<h1>欢迎您 <span class='username'>admin</span></h1>
+			   	 		<p>修改账号密码</p>
+			   	 	</el-header>
+			   	 	
+			    	<el-main>
+			    		<el-card class="box-card">
+						  	<div slot="header" class="clearfix">
+						    	<span>修改账号密码</span>
+						  	</div>
+						 	<div class="text item" id='add'>
+						 		<p><span class="xing">*</span>原密码:</p>
+						 		
+						    	<p><el-input  type='password' v-model='oldpassword' size="small"></el-input></p>
+						    	
+						    	<p><span class="xing">*</span>新密码:</p>
+						    	
+						    	<p><el-input  type='password' v-model='newpassword' size="small"></el-input></p>
+						    	
+						    	<p><span class="xing">*</span>新密码:</p>
+						    	
+						    	<p><el-input type='password' v-model='newpassword1' size="small"></el-input></p>
+						    	
+							    <p><el-button @click='change' class='btn' type="success">修改</el-button></p>
+							    
+						  	</div>
+						  	
+						  	
+						  	
+						</el-card>
+						
+			    	</el-main>
+			    	
+			    	<el-footer>&copy;2018版权归我所有</el-footer>
+			  	
+			  	</el-container>
+		</div>
+		
+		<script>
+			new Vue({
+				el:'#app',
+				data:{
+					oldpassword: '',
+					newpassword: '',
+					newpassword1: ''
+				},
+				methods:{
+					change:function(){
+//						获取用户的数据
+						var oldpassword = this.oldpassword;
+						var newpassword = this.newpassword;
+						
+						ajax({
+							type: 'post',
+							
+							url: '/api/change.php',
+							
+							data: `oldpassword=${oldpassword}&newpassword=${newpassword}`,
+							
+//							datatype: 'json',
+							
+							success: function(data){
+								console.log(data);
+								if(data.errcode == 0){
+//									alert(data.msg);
+									top.location.href='/login.html';
+								}else{
+									alert(data.msg);
+								}
+							}
+						});
+					}
+				}
+			});
+		</script>
+	</body>
+</html>

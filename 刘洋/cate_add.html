@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>添加分类</title>
+		<link rel="stylesheet" type="text/css" href="css/index.css"/>
+		<!--引入字体插件-->
+		<link rel="stylesheet" type="text/css" href="css/font.css"/>
+		<link rel="stylesheet" type="text/css" href="css/default.css"/>
+		<!--引入框架插件-->
+		<script type="text/javascript" src="js/vue.js" ></script>
+		<!--引入插件-->
+		<script type="text/javascript" src="js/index.js" ></script>
+		<script src="./api/checkuser.php"></script>
+		<script src="js/ajax.js"></script>
+	</head>
+	<body>
+		<div id='app'>
+			<el-container>
+			  		
+			   	 	<el-header>
+			   	 		<h1>欢迎您 <span class='username'>admin</span></h1>
+			   	 		<p>添加分类</p>
+			   	 	</el-header>
+			   	 	
+			    	<el-main>
+			    		<el-card class="box-card">
+						  	<div slot="header" class="clearfix">
+						    	<span>添加分类</span>
+						  	</div>
+						 	<div class="text item" id='add'>
+						 		
+						 		<p><span class="xing">*</span>所属分类:</p>
+						 		
+						    	<el-select v-model='category' placeholder="选择分类" size="small">
+						    		
+								    <el-option
+								      v-for="item in options"
+								      :key="item.value"
+								      :label="item.label"
+								      :value="item.value">
+								    </el-option>
+								    
+							    </el-select>
+						    	
+						    	<p><span class="xing">*</span>分类名称:</p>
+						    	
+						    	<p><el-input  type='text' v-model='name' size="small"></el-input></p>
+						    	
+						    	
+						    	<p><span class="xing">*</span>状态:</p>
+						    	
+						    	<el-radio-group v-model="state">
+								    <el-radio :label="1">启用</el-radio>
+								    <el-radio :label="0">禁用</el-radio>
+								</el-radio-group>
+						    	
+							    <p><el-button @click='add' class='btn' type="success">添加</el-button></p>
+							    
+						  	</div>
+						  	
+						  	
+						  	
+						</el-card>
+						
+			    	</el-main>
+			    	
+			    	<el-footer>&copy;2018版权归我所有</el-footer>
+			  	
+			  	</el-container>
+		</div>
+		
+		<script>
+			new Vue({
+//				挂载
+				el:'#app',
+//				渲染双向绑定
+				data:{
+					name: '',
+					category: '',
+					state: 0,
+					options: [{
+				        value: 0,
+				        label: '顶级分类'
+				    }]
+				},
+//				方法
+				methods:{
+					add:function(){
+						var name = this.name;
+						var category = this.category;
+						var state = this.state;
+						
+//						构造ajax请求发送到服务器端
+						ajax({
+							type: 'post',
+							url: '/api/cate_add.php',
+							data: `name=${name}&parentid=${category}&state=${state}`,
+							success:function(data){
+//								console.log(data);
+								if(data.errcode == 0){
+									alert(data.msg);
+									location.href="cate_list.html";
+								}else{
+									alert(data.msg);
+								}
+							}
+						});
+					}
+				},
+				mounted:function(){
+					var _that = this;
+//					构造ajax请求
+					ajax({
+						url:'/api/cate_show.php',
+						success:function(data){
+//							console.log(data);
+//							console.log(_that.options);
+//							获取到一个数组
+							_that.options=_that.options.concat(data);
+						}
+					});
+				}
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,202 @@
+-<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>账号管理</title>
+		<link rel="stylesheet" type="text/css" href="css/index.css"/>
+		<!--引入字体插件-->
+		<link rel="stylesheet" type="text/css" href="css/font.css"/>
+		<link rel="stylesheet" type="text/css" href="css/default.css"/>
+		<!--引入框架插件-->
+		<script type="text/javascript" src="js/vue.js" ></script>
+		<!--引入插件-->
+		<script type="text/javascript" src="js/index.js" ></script>
+		<script src="./api/checkuser.php"></script>
+		<script src="js/ajax.js"></script>
+	</head>
+	<body>
+		<div id='app'>
+			<el-container>
+			  		
+			   	 	<el-header>
+			   	 		<h1>欢迎您 <span class='username'>admin</span></h1>
+			   	 		<p>查看所有商品列表</p>
+			   	 	</el-header>
+			   	 	
+			    	<el-main>
+			    		<el-card class="box-card">
+						  	<div slot="header" class="clearfix">
+						    	<span>商品管理</span>
+						  	</div>
+						  	
+						 	<div class="text item" id="goods_list">
+						 		<!--搜索框-->
+						 		<div id="searchform">
+							  		<el-select v-model="cateid" placeholder="请选择分类" size="mini">
+									    <el-option
+									      v-for="item in options"
+									      :key="item.value"
+									      :label="item.label"
+									      :value="item.value">
+									    </el-option>
+									</el-select>
+									<span>关键词：</span>
+									<el-input v-model="keywords" placeholder="请输入商品名称或条形码" size="mini"></el-input>
+									<span>（商品名称,条形码）</span>
+									<el-button type="success" size="mini">查询</el-button>
+					  			</div>
+					  			
+					  			<!--表格-->
+					  			<el-table :data="tableData"  style="width: 100%">
+					  				
+								    <el-table-column label="商品条形码">
+								      <template slot-scope="scope">
+								        <span>{{scope.row.code}}</span>
+								      </template>
+								    </el-table-column>
+								    
+	   								<el-table-column label="商品名称">
+									      <template slot-scope="scope">
+									        <span>{{scope.row.name}}</span>
+									      </template>
+									</el-table-column>
+									
+									<el-table-column label="所属分类">
+									      <template slot-scope="scope">
+									        <span>{{scope.row.catename}}</span>
+									      </template>
+									</el-table-column>
+									
+									<el-table-column label="售价">
+									      <template slot-scope="scope">
+									        <span>{{scope.row.price}}</span>
+									      </template>
+									</el-table-column>
+									
+									<el-table-column label="促销价">
+									      <template slot-scope="scope">
+									        <span>{{scope.row.price*0.1}}</span>
+									      </template>
+									</el-table-column>
+									
+									<el-table-column label="市场价">
+									      <template slot-scope="scope">
+									        <span>{{scope.row.saleprice}}</span>
+									      </template>
+									</el-table-column>
+									
+									<el-table-column label="库存">
+									      <template slot-scope="scope">
+									        <span>{{scope.row.num}}</span>
+									      </template>
+									</el-table-column>
+									
+									<el-table-column label="库存总额">
+									      <template slot-scope="scope">
+									        <span>{{scope.row.num*scope.row.price}}</span>
+									      </template>
+									</el-table-column>
+									
+									<el-table-column label="销售总额">
+									      <template slot-scope="scope">
+									        <span>{{scope.row.saleprice*scope.row.num}}</span>
+									      </template>
+									</el-table-column>
+									
+								    <el-table-column id='button' label="管理">
+								      <template slot-scope="scope">
+								        <i class="el-icon-edit" @click="edit(scope.row.id)"></i>
+								        <i class="el-icon-delete" @click="del(scope.row.id)"></i>
+								      </template>
+								    </el-table-column>
+								    
+								</el-table>
+								<el-pagination background layout="prev, pager, next" :page-count="pagecount" @current-change="page"></el-pagination>
+								    
+								
+						  	</div>
+						  	
+						  
+						  	
+						</el-card>
+						
+			    	</el-main>
+			    	
+			    	<el-footer>&copy;2018版权归我所有</el-footer>
+			  	
+			  	</el-container>
+		</div>
+		
+		<script>
+			new Vue({
+				el:'#app',
+				data:{
+					options:[{
+						value:0,
+						label:'顶级分类'
+					}],
+					cateid:'',
+					keywords:'',
+					tableData:[],
+					pagecount:1
+					
+				},
+				methods:{
+					page:function(page){
+//						console.log(data);
+						this.show(page);
+						
+					},
+					
+//					绑定一个删除事件
+					del:function(id){
+//						console.log(id);
+//						改变this指向，指向ajax请求
+						var _that = this;
+						ajax({
+							url:'/api/goods_del.php?id='+id,
+							success:function(data){
+								console.log(data);
+								if(data.errcode == 0){
+									alert('删除成功');
+									_that.show(1);
+								}else{
+									alert('删除失败');
+								}
+							}
+						});
+						
+					},
+					edit:function(id){
+						location.href="/goods_edit.html?id="+id;
+					},
+					show:function(page){
+						var _that = this;
+						ajax({
+							url:"/api/goods_show.php?page="+page,
+							success:function(data){
+//								console.log(data);
+								
+								_that.pagecount = data.pop();
+								
+								_that.tableData = data;
+								
+							}
+						});
+					}
+				},
+//				显示下拉列表框
+				mounted:function(){
+					this.show(1);
+					var _that = this;
+					ajax({
+						url:'/api/cate_show.php',
+						success:function(data){
+							_that.options = _that.options.concat(data);
+						}
+					});
+				}
+			});
+		</script>
+	</body>
+</html>
